@@ -1,24 +1,30 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
-
-// connect to mongo db
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
 const mongoose = require("mongoose");
+let app = express();
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
+let catalogRouter = require('./routes/catalog');
+// connect to mongo db
+
+
 mongoose.set("strictQuery", false);
+
 const mongoDB = "mongodb://127.0.0.1:27017/library";
 
 main().catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connection(mongoDB);
+  await mongoose.connect(mongoDB);
 }
+// route middleware that will happen on every request
+
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+app.use("/catalog", catalogRouter);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
